@@ -3,30 +3,9 @@ using System.Text;
 using is_it_sus;
 
 
-//TEST ZONE
-
 var suspectFinder = new SuspectFinderService();
 suspectFinder.LoadExtensionsData();
-// foreach(var l in suspectFinder.Languages)
-// {
-//     Console.WriteLine(l);
-// }
 
-// suspectFinder.FindExtension(".php");
-// suspectFinder.FindExtension(".jar");
-// suspectFinder.FindExtension(".txt");
-// suspectFinder.FindExtension(".css");
-// suspectFinder.FindExtension(".cs");
-
-// Console.WriteLine($@"""
-// {string.Join(",", suspectFinder.FoundExtentions.Keys)}
-// Regex : /{string.Join("|",suspectFinder.FoundExtentions[".php"].Keywords)}/gi
-// """);
-//END TEST ZONE
-
-
-// on passe isitsus
-// ou isitsus [path]
 
 string path;
 
@@ -48,6 +27,8 @@ int totalFilesCounter = 0;
 int susFileCounter = 0;
 
 Directory.CreateDirectory("./logs");
+var logDir = Directory.CreateDirectory($@"./logs/Logs_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}");
+
 
 // Regex regRefacto = new(@"//\s*(refacto|todo)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 // Regex addComment = new(@"^//", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -98,7 +79,7 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
         Console.WriteLine($"{file} \n {content}");
         Interlocked.Increment(ref susFileCounter);
 
-        File.WriteAllText($@"./logs/susReport_{Path.GetFileNameWithoutExtension(file)}_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}.txt", $"{file} \n {content}");
+        File.WriteAllText($@"{logDir.FullName}/susReport_{Path.GetFileNameWithoutExtension(file)}_{Guid.NewGuid()}.txt", $"{file} \n {content}");
     }
 
     Interlocked.Increment(ref totalFilesCounter);
