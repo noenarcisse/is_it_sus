@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
 using is_it_sus;
+using System.Collections.Concurrent;
 
 
 var suspectFinder = new SuspectFinderService();
@@ -79,13 +80,20 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
         Console.WriteLine($"{file} \n {content}");
         Interlocked.Increment(ref susFileCounter);
 
-        File.WriteAllText($@"{logDir.FullName}/susReport_{Path.GetFileNameWithoutExtension(file)}_{Guid.NewGuid()}.txt", $"{file} \n {content}");
+        //Faut ConcurrentBag<T>
+        //ou ConcurrentDictionary<k,v> pour prepa un result en multithread
+        //comme ca on evite l'IO continues de fichiers qui rend l'antivirus fou
+
+        //File.WriteAllText($@"{logDir.FullName}/susReport_{Path.GetFileNameWithoutExtension(file)}_{Guid.NewGuid()}.txt", $"{file} \n {content}");
     }
 
     Interlocked.Increment(ref totalFilesCounter);
 
 });
 
+
+//puis ici on ecrit une seule fois le log en sortie
+//File.WriteAllText($@"{logDir.FullName}/susReport_{Path.GetFileNameWithoutExtension(file)}_{Guid.NewGuid()}.txt", $"UN GROS LOG");
 
 
 Console.WriteLine($"""
