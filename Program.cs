@@ -47,6 +47,7 @@ IEnumerable<string> files = Directory   .EnumerateFiles(path, $"*.*", SearchOpti
 int totalFilesCounter = 0;
 int susFileCounter = 0;
 
+Directory.CreateDirectory("./logs");
 
 // Regex regRefacto = new(@"//\s*(refacto|todo)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 // Regex addComment = new(@"^//", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -60,7 +61,11 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
     string ext = Path.GetExtension(file);
     suspectFinder.FindExtension(ext);
 
-    string keywordsPattern = Regex.Escape(string.Join("|", suspectFinder.FoundExtentions[ext].Keywords));
+
+    var escapedKw = suspectFinder.FoundExtentions[ext].Keywords.Select(k => Regex.Escape(k));
+    string keywordsPattern = string.Join("|", escapedKw);
+
+    //Console.WriteLine(keywordsPattern);
 
     Regex susRegex = new(keywordsPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
@@ -68,11 +73,8 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
     {
         int lineCounter = 1;
 
-        await foreach (var line in File.ReadLinesAsync(file, cancelToken))
+        await foreach (var currentLine in File.ReadLinesAsync(file, cancelToken))
         {
-            //hmm?
-            var currentLine = line;
-
             if(susRegex.IsMatch(currentLine))
             {
                 content.AppendLine($"ON LINE {lineCounter}");
@@ -84,6 +86,7 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
         }
 
     }
+    catch (OperationCanceledException) { }
     catch (Exception except)
     {
         Console.WriteLine("Could not read the content in file "+Path.GetFileNameWithoutExtension(file));
@@ -94,6 +97,8 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
     {
         Console.WriteLine($"{file} \n {content}");
         Interlocked.Increment(ref susFileCounter);
+
+        File.WriteAllText($@"./logs/susReport_{Path.GetFileNameWithoutExtension(file)}_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}.txt", $"{file} \n {content}");
     }
 
     Interlocked.Increment(ref totalFilesCounter);
@@ -104,7 +109,10 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
 
 Console.WriteLine($"""
 Langages détectés : {string.Join(", ", suspectFinder.ListAllFoundLanguages())}
-{susFileCounter} / {totalFilesCounter} fichiers avec des refactos
+{susFileCounter} / {totalFilesCounter} fichiers avec des lignes suspectes.
 """);
+
+
+
 
 return 0;
