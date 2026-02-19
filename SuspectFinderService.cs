@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Text.Json;
 using is_it_sus.DTO;
 
@@ -8,37 +9,10 @@ public class SuspectFinderService
     //ensemble des ext pour tester les fichiers inconnus
     HashSet<string> _extensions = [];
     //le bucket des extensions deja listées et le langage correspondant pour tester dans le file
-    public Dictionary<string, Language> FoundExtentions {get; private set;} = [];
+    public ConcurrentDictionary<string, Language> FoundExtentions {get; private set;} = [];
     public  List<Language> Languages {get; private set;} = [];
     
-    
-    public void FindExtension(string ext)
-    {
-        if(FoundExtentions.ContainsKey(ext))
-            return;
-
-        if(_extensions.Contains(ext))
-        {
-            foreach(var lang  in Languages)
-            {
-                if(lang.Extensions.Contains(ext))
-                {
-                    FoundExtentions.Add(ext, lang);
-                    break;
-                }
-            }
-        }
-    }
-    public bool HasExtension(string ext)
-    {
-        return _extensions.Contains(ext);
-    }
-
-    public void ListAllExtensions(string path)
-    {
-        //
-    }
-
+//INIT
     public void LoadExtensionsData()
     {
         string jsonFilePath =  AppData.Instance.SuspectKeywordsJsonFile;
@@ -66,5 +40,48 @@ public class SuspectFinderService
             }
         }
 
+    }
+    
+
+    public void FindExtension(string ext)
+    {
+        if(FoundExtentions.ContainsKey(ext))
+            return;
+
+        if(HasExtension(ext))
+        {
+            foreach(var lang  in Languages)
+            {
+                if(lang.Extensions.Contains(ext))
+                {
+                    FoundExtentions.TryAdd(ext, lang);
+                    break;
+                }
+            }
+        }
+    }
+
+//HELPERS & GETTERS
+    public bool HasExtension(string ext)
+    {
+        return _extensions.Contains(ext);
+    }
+    public IEnumerable<string> GetAllFoundExtensions()
+    {
+        return FoundExtentions.Keys.AsEnumerable();
+    }
+    public IEnumerable<string> ListAllExtensions()
+    {
+        return _extensions.AsEnumerable();
+    }
+
+    public IEnumerable<string> ListAllFoundLanguages()
+    {
+        HashSet<string> langName = [];
+        foreach(var l in FoundExtentions.Values)
+        {
+            langName.Add(l.Name);
+        }
+        return langName.AsEnumerable();
     }
 }

@@ -12,93 +12,99 @@ suspectFinder.LoadExtensionsData();
 //     Console.WriteLine(l);
 // }
 
-suspectFinder.FindExtension(".php");
-suspectFinder.FindExtension(".jar");
-suspectFinder.FindExtension(".txt");
-suspectFinder.FindExtension(".css");
-suspectFinder.FindExtension(".cs");
+// suspectFinder.FindExtension(".php");
+// suspectFinder.FindExtension(".jar");
+// suspectFinder.FindExtension(".txt");
+// suspectFinder.FindExtension(".css");
+// suspectFinder.FindExtension(".cs");
 
-Console.WriteLine($"""
-{string.Join(",", suspectFinder.FoundExtentions.Keys)}
-""");
-
+// Console.WriteLine($@"""
+// {string.Join(",", suspectFinder.FoundExtentions.Keys)}
+// Regex : /{string.Join("|",suspectFinder.FoundExtentions[".php"].Keywords)}/gi
+// """);
 //END TEST ZONE
 
 
+// on passe isitsus
+// ou isitsus [path]
 
-// if(args.Length <= 0 || string.IsNullOrWhiteSpace(args[0]))
-// {
-//     Console.WriteLine("Usage is: isitsus");
-//     return 1; 
-// }
+string path;
 
-// string extension = args[0];
-// string currentPath = Directory.GetCurrentDirectory();
+if(args.Length <= 0 || string.IsNullOrWhiteSpace(args[0]))
+    path = Directory.GetCurrentDirectory();
 
-// IEnumerable<string> files = Directory.EnumerateFiles(currentPath, $"*.{extension}", SearchOption.AllDirectories);
+path = args[0];
 
-// int totalFilesCounter = 0;
-// int fileWithRefactoCounter = 0;
+if(!Path.Exists(path))
+    return 1;
 
 
-// //Regex reg = new(@"//\s*(refacto|todo).*(\r?\n\s*//.*)*", RegexOptions.IgnoreCase);
+
+
+IEnumerable<string> files = Directory   .EnumerateFiles(path, $"*.*", SearchOption.AllDirectories)
+                                        .Where(f => suspectFinder.HasExtension(Path.GetExtension(f)));
+
+int totalFilesCounter = 0;
+int susFileCounter = 0;
+
+
 // Regex regRefacto = new(@"//\s*(refacto|todo)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 // Regex addComment = new(@"^//", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-// //multi threading edition
-// await Parallel.ForEachAsync(files, async(file, cancelToken) =>
-// {
-//     bool hasRefactoInFile = false;
-//     var content = new StringBuilder();
+//multi threading edition
+await Parallel.ForEachAsync(files, async(file, cancelToken) =>
+{
+    bool isSusFile = false;
+    var content = new StringBuilder();
 
-//     try
-//     {
-//         bool isSearchingForAdditionalComments = false;
-//         int lineCounter = 1;
+    string ext = Path.GetExtension(file);
+    suspectFinder.FindExtension(ext);
 
-//         await foreach (var line in File.ReadLinesAsync(file, cancelToken))
-//         {
-//             var currentLine = line.TrimStart();
+    string keywordsPattern = Regex.Escape(string.Join("|", suspectFinder.FoundExtentions[ext].Keywords));
 
-//             if(isSearchingForAdditionalComments && addComment.IsMatch(currentLine))
-//             {
-//                 content.AppendLine($"{currentLine}");
-//             }
-//             else
-//             {
-//                 isSearchingForAdditionalComments = false;
-//             }
+    Regex susRegex = new(keywordsPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-//             if(regRefacto.IsMatch(currentLine))
-//             {
-//                 content.AppendLine($"ON LINE {lineCounter}");
-//                 content.AppendLine($"{currentLine}");
+    try
+    {
+        int lineCounter = 1;
 
-//                 isSearchingForAdditionalComments = true;
-//                 hasRefactoInFile = true;
-//             }
+        await foreach (var line in File.ReadLinesAsync(file, cancelToken))
+        {
+            //hmm?
+            var currentLine = line;
 
-//             lineCounter++;
-  
-//         }
+            if(susRegex.IsMatch(currentLine))
+            {
+                content.AppendLine($"ON LINE {lineCounter}");
+                content.AppendLine($"{currentLine}");
 
-//     }
-//     catch (Exception except)
-//     {
-//         Console.WriteLine("Could not read the content in file "+Path.GetFileNameWithoutExtension(file));
-//         Console.WriteLine(except.Message);
-//     }
+                isSusFile = true;
+            }
+            lineCounter++;
+        }
 
-//     if(hasRefactoInFile)
-//     {
-//         Console.WriteLine($"{file} \n {content}");
-//         Interlocked.Increment(ref fileWithRefactoCounter);
-//     }
+    }
+    catch (Exception except)
+    {
+        Console.WriteLine("Could not read the content in file "+Path.GetFileNameWithoutExtension(file));
+        Console.WriteLine(except.Message);
+    }
 
-//     Interlocked.Increment(ref totalFilesCounter);
+    if(isSusFile)
+    {
+        Console.WriteLine($"{file} \n {content}");
+        Interlocked.Increment(ref susFileCounter);
+    }
 
-// });
+    Interlocked.Increment(ref totalFilesCounter);
 
-// Console.WriteLine($"{fileWithRefactoCounter} / {totalFilesCounter} fichiers avec des refactos");
+});
+
+
+
+Console.WriteLine($"""
+Langages détectés : {string.Join(", ", suspectFinder.ListAllFoundLanguages())}
+{susFileCounter} / {totalFilesCounter} fichiers avec des refactos
+""");
 
 return 0;
