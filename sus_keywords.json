@@ -1,0 +1,115 @@
+{
+    "python": {
+      "name" : "python",
+      "extensions": [".py", ".pyw", ".pyx"],
+      "keywords": [
+        "eval(", "exec(", "subprocess", "popen", "system(",
+        "urlopen", "socket", "base64.b64decode", "os.system",
+        "__import__", "os.remove", "shutil.rmtree", "compile("
+      ]
+    },
+    "javascript_typescript": {
+      "extensions": [".js", ".mjs", ".cjs", ".ts", ".jsx", ".tsx"],
+      "keywords": [
+        "eval(", "fetch(", "XMLHttpRequest", "axios", "innerHTML",
+        "document.write", "dangerouslySetInnerHTML", "fromCharCode",
+        "unescape(", "atob(", "btoa(", "setTimeout", "setInterval",
+        "window[", "fs.unlink", "fs.rmdir"
+      ]
+    },
+    "php": {
+      "extensions": [".php", ".php3", ".php5", ".phtml"],
+      "keywords": [
+        "eval(", "exec(", "shell_exec", "system(", "popen",
+        "base64_decode", "gzinflate", "str_rot13", "hex2bin",
+        "chr(", "$$", "$_GET", "$_POST", "$_REQUEST",
+        "include(", "require("
+      ]
+    },
+    "csharp_dotnet": {
+      "extensions": [".cs", ".csx", "cshtml"],
+      "keywords": [
+        "Process.Start", "HttpClient", "WebClient", "cmd.exe",
+        "powershell", "Registry", "AppData", "Task.Delay",
+        "Thread.Sleep", "Assembly.Load", "Activator.CreateInstance",
+        "Directory.Delete", "File.Delete"
+      ]
+    },
+    "java_kotlin": {
+      "extensions": [".java", ".kt", ".kts", ".groovy"],
+      "keywords": [
+        "Runtime.exec", "ProcessBuilder", "HttpClient",
+        "URLConnection", "Class.forName", "reflect",
+        "loadClass", "ScriptEngine"
+      ]
+    },
+    "bash_shell": {
+      "extensions": [".sh", ".bash", ".zsh", ".ksh"],
+      "keywords": [
+        "curl", "wget", "eval", "base64", "/etc/passwd",
+        "/etc/shadow", "~/.ssh", "id_rsa", "nc ",
+        "rm -rf", "shred", "dd if=/dev/zero", "chmod 777"
+      ]
+    },
+    "ruby": {
+      "extensions": [".rb", ".rake", "Gemfile"],
+      "keywords": [
+        "eval(", "exec(", "system(", "send(", "const_get",
+        "instance_eval", "class_eval", "IO.popen", "File.delete"
+      ]
+    },
+    "perl": {
+      "extensions": [".pl", ".pm", ".cgi"],
+      "keywords": [
+        "eval(", "system(", "exec(", "s///e", "s///ee",
+        "/e", "$$", "&$", "base64", "pack(", "unpack("
+      ]
+    },
+    "lua": {
+      "extensions": [".lua"],
+      "keywords": [
+        "loadstring(", "load(", "dofile(", "loadfile(",
+        "io.popen(", "os.execute(", "require(", "pcall("
+      ]
+    },
+    "powershell": {
+      "extensions": [".ps1", ".psm1", ".psd1"],
+      "keywords": [
+        "Invoke-Expression", "IEX", "Invoke-Command",
+        "DownloadString", "DownloadFile", "EncodedCommand",
+        "FromBase64String", "Start-Process", "Remove-Item",
+        "[System.Reflection.Assembly]"
+      ]
+    },
+    "vbscript_batch": {
+      "extensions": [".vbs", ".vbe", ".bat", ".cmd"],
+      "keywords": [
+        "WScript.Shell", "Shell(", "CreateObject", "eval",
+        "cmd /c", "powershell", "del /f", "rd /s", "format"
+      ]
+    },
+    "yaml_cicd": {
+      "extensions": [".yml", ".yaml"],
+      "keywords": [
+        "run:", "${{", "curl | bash", "wget | sh",
+        "!!python/object", "!!java", "eval", "exec",
+        "--privileged", "docker.sock"
+      ]
+    },
+    "dockerfile": {
+      "extensions": ["Dockerfile", ".dockerfile"],
+      "keywords": [
+        "--privileged", "--cap-add", "docker.sock", "-v /",
+        "curl", "wget", "chmod 777", "USER root",
+        "RUN curl", "RUN wget"
+      ]
+    },
+    "sql": {
+      "extensions": [".sql"],
+      "keywords": [
+        "DROP TABLE", "UNION SELECT", "--", "OR 1=1",
+        "xp_cmdshell", "EXEC(", "sp_executesql"
+      ]
+    }
+  
+}
