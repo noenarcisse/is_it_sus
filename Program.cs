@@ -27,14 +27,12 @@ IEnumerable<string> files = Directory   .EnumerateFiles(path, $"*.*", SearchOpti
 int totalFilesCounter = 0;
 int susFileCounter = 0;
 
+//REFACTO
+// logs in one file, concurrent bag before saving
 Directory.CreateDirectory("./logs");
 var logDir = Directory.CreateDirectory($@"./logs/Logs_{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}");
 
 
-// Regex regRefacto = new(@"//\s*(refacto|todo)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-// Regex addComment = new(@"^//", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-//multi threading edition
 await Parallel.ForEachAsync(files, async(file, cancelToken) =>
 {
     bool isSusFile = false;
@@ -46,8 +44,6 @@ await Parallel.ForEachAsync(files, async(file, cancelToken) =>
 
     var escapedKw = suspectFinder.FoundExtentions[ext].Keywords.Select(k => Regex.Escape(k));
     string keywordsPattern = string.Join("|", escapedKw);
-
-    //Console.WriteLine(keywordsPattern);
 
     Regex susRegex = new(keywordsPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
