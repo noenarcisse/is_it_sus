@@ -29,11 +29,26 @@
     "csharp_dotnet": {
       "extensions": [".cs", ".csx", "cshtml"],
       "keywords": [
-        "Process.Start", "HttpClient", "WebClient", "cmd.exe",
-        "powershell", "Registry", "AppData", "Task.Delay",
-        "Thread.Sleep", "Assembly.Load", "Activator.CreateInstance",
-        "Directory.Delete", "File.Delete"
-      ]
+    "Process.Start", 
+    "HttpClient", "WebClient", 
+    "cmd.exe", "powershell", 
+    "Registry",    "AppData", 
+    "Task.Delay", "Thread.Sleep", "Assembly.Load", 
+    "Activator.CreateInstance", "Directory.Delete", "File.Delete",
+    "DllImport", "kernel32", "user32", "advapi32", "ntdll",
+    "SetWindowsHookEx", "CallNextHookEx", "UnhookWindowsHookEx",
+    "GetAsyncKeyState", "GetKeyState", "GetKeyboardState",
+    "SharpHook", "UioHook", "EventLoopGlobalHook", "GlobalEvents",
+    "InputSimulator", "WindowsInput", "MouseSimulator", "KeyboardSimulator",
+    "SendInput", "mouse_event", "keybd_event",
+    "OpenProcess", "VirtualAllocEx", "WriteProcessMemory", "CreateRemoteThread",
+    "ReadProcessMemory", "NtCreateSection", "MapViewOfSection", "QueueUserAPC",
+    "IsDebuggerPresent", "CheckRemoteDebuggerPresent", "GetProcAddress",
+    "LoadLibrary", "FreeLibrary", "GetDelegateForFunctionPointer",
+    "CryptoStream", "Socket.Connect", "GetMethod", "Invoke", "Marshal.Copy",
+    "Expression.Compile", "CSharpCodeProvider", "DynamicInvoke", "using SharpHook",
+    "using Gma.System.MouseKeyHook", "Reflection.Emit", "VarPtr", "ObjPtr"
+  ]
     },
     "java_kotlin": {
       "extensions": [".java", ".kt", ".kts", ".groovy"],
